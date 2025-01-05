@@ -1,4 +1,5 @@
 import csv
+import sys
 from typing import IO, AsyncGenerator
 
 from .page import Page
@@ -19,6 +20,7 @@ class CsvParser(Parser):
             content_str = content.read().decode("utf-8")
 
         # Create a CSV reader from the text content
+        csv.field_size_limit(sys.maxsize)
         reader = csv.reader(content_str.splitlines())
         offset = 0
 
