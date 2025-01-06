@@ -13,14 +13,14 @@ class ChatApproach(Approach, ABC):
         {"role": "user", "content": "How did crypto do last year?"},
         {"role": "assistant", "content": "Summarize Cryptocurrency Market Dynamics from last year"},
         {"role": "user", "content": "What are my health plans?"},
-        {"role": "assistant", "content": "Show available health plans"},
+        {"role": "assistant", "content": "Show available health plans"}
     ]
     NO_RESPONSE = "0"
 
-    follow_up_questions_prompt_content = """
+    follow_up_questions_prompt_content = """Jako Asystent pracownika firmy Sklepy Komfort, pomóż pracownikowi w sposób profesjonalny i spokojny. W przypadku identyfikacji pytania w innym języku niż polski, przetłumacz na polski.
     """
 
-    query_prompt_template = """
+    query_prompt_template = """Jako Asystent pracownika firmy Sklepy Komfort, pomóż pracownikowi w sposób profesjonalny i spokojny. W przypadku identyfikacji pytania w innym języku niż polski, przetłumacz na polski.
     """
 
     @property
