@@ -40,7 +40,7 @@ export const SpeechOutputBrowser = ({ answer }: Props) => {
     const currentLng = i18n.language;
     let lngCode = supportedLngs[currentLng]?.locale;
     if (!lngCode) {
-        lngCode = "pl-pl";
+        lngCode = "en-US";
     }
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
 

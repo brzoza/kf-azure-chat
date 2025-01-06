@@ -61,7 +61,7 @@ def chat_approach(openai_client, mock_confidential_client_success):
         embedding_dimensions=MOCK_EMBEDDING_DIMENSIONS,
         sourcepage_field="",
         content_field="",
-        query_language="pl-pl",
+        query_language="",
         query_speller="lexicon",
     )
 

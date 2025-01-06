@@ -14,7 +14,7 @@ const useCustomSpeechRecognition = () => {
     const currentLng = i18n.language;
     let lngCode = supportedLngs[currentLng]?.locale;
     if (!lngCode) {
-        lngCode = "pl-pl";
+        lngCode = "en-US";
     }
 
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
