@@ -216,6 +216,8 @@ class ChatReadRetrieveReadApproach(ChatApproach):
         query_text = self.get_search_query(chat_completion, original_user_query)
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
+
+        # If retrieval mode includes vectors, compute an embedding for the query
         vectors: list[VectorQuery] = []
         if use_vector_search:
             vectors.append(await self.compute_text_embedding(query_text))
@@ -234,39 +236,11 @@ class ChatReadRetrieveReadApproach(ChatApproach):
         )
 
         sources_content = self.get_sources_content(results, use_semantic_captions, use_image_citation=False)
-
-        # STEP 3: Handle case where no documents are found
-        if not sources_content:
-            # No results found, generate response without document context
-            system_message = self.get_system_prompt(
-                overrides.get("prompt_template"),
-                self.follow_up_questions_prompt_content if overrides.get("suggest_followup_questions") else "",
-            )
-            response_token_limit = 1024
-            messages = build_messages(
-                model=self.chatgpt_model,
-                system_prompt=system_message,
-                past_messages=messages[:-1],
-                new_user_content=original_user_query,
-                max_tokens=self.chatgpt_token_limit - response_token_limit,
-                fallback_to_default=self.ALLOW_NON_GPT_MODELS,
-            )
-
-            chat_coroutine = self.openai_client.chat.completions.create(
-                model=self.chatgpt_deployment if self.chatgpt_deployment else self.chatgpt_model,
-                messages=messages,
-                temperature=overrides.get("temperature", 0.3),
-                max_tokens=response_token_limit,
-                n=1,
-                stream=should_stream,
-                seed=seed,
-            )
-
-            # Return empty extra_info and chat_coroutine as a tuple
-            return {}, chat_coroutine
-
-        # STEP 4: Generate a contextual and content-specific answer using the search results and chat history
         content = "\n".join(sources_content)
+
+        # STEP 3: Generate a contextual and content specific answer using the search results and chat history
+
+        # Allow client to replace the entire prompt, or to inject into the exiting prompt using >>>
         system_message = self.get_system_prompt(
             overrides.get("prompt_template"),
             self.follow_up_questions_prompt_content if overrides.get("suggest_followup_questions") else "",
@@ -277,6 +251,7 @@ class ChatReadRetrieveReadApproach(ChatApproach):
             model=self.chatgpt_model,
             system_prompt=system_message,
             past_messages=messages[:-1],
+            # Model does not handle lengthy system messages well. Moving sources to latest user conversation to solve follow up questions prompt.
             new_user_content=original_user_query + "\n\nSources:\n" + content,
             max_tokens=self.chatgpt_token_limit - response_token_limit,
             fallback_to_default=self.ALLOW_NON_GPT_MODELS,
@@ -290,7 +265,11 @@ class ChatReadRetrieveReadApproach(ChatApproach):
                 ThoughtStep(
                     "Prompt to generate search query",
                     query_messages,
-                    {"model": self.chatgpt_model, "deployment": self.chatgpt_deployment},
+                    (
+                        {"model": self.chatgpt_model, "deployment": self.chatgpt_deployment}
+                        if self.chatgpt_deployment
+                        else {"model": self.chatgpt_model}
+                    ),
                 ),
                 ThoughtStep(
                     "Search using generated search query",
@@ -308,10 +287,20 @@ class ChatReadRetrieveReadApproach(ChatApproach):
                     "Search results",
                     [result.serialize_for_results() for result in results],
                 ),
+                ThoughtStep(
+                    "Prompt to generate answer",
+                    messages,
+                    (
+                        {"model": self.chatgpt_model, "deployment": self.chatgpt_deployment}
+                        if self.chatgpt_deployment
+                        else {"model": self.chatgpt_model}
+                    ),
+                ),
             ],
         }
 
         chat_coroutine = self.openai_client.chat.completions.create(
+            # Azure OpenAI takes the deployment name as the model name
             model=self.chatgpt_deployment if self.chatgpt_deployment else self.chatgpt_model,
             messages=messages,
             temperature=overrides.get("temperature", 0.3),
@@ -320,5 +309,4 @@ class ChatReadRetrieveReadApproach(ChatApproach):
             stream=should_stream,
             seed=seed,
         )
-
-        return extra_info, chat_coroutine
+        return (extra_info, chat_coroutine)
