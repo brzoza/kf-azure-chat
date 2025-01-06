@@ -69,7 +69,7 @@
       "value": "${AZURE_SEARCH_SERVICE_SKU=basic}"
     },
     "searchQueryLanguage": {
-      "value": "${AZURE_SEARCH_QUERY_LANGUAGE=pl-pl}"
+      "value": "${AZURE_SEARCH_QUERY_LANGUAGE=en-US}"
     },
     "searchQuerySpeller": {
       "value": "${AZURE_SEARCH_QUERY_SPELLER=lexicon}"

@@ -31,7 +31,7 @@ def chat_approach():
         embedding_dimensions=MOCK_EMBEDDING_DIMENSIONS,
         sourcepage_field="",
         content_field="",
-        query_language="pl-pl",
+        query_language="en-US",
         query_speller="lexicon",
     )
 
@@ -176,7 +176,7 @@ async def test_search_results_filtering_by_scores(
         embedding_dimensions=MOCK_EMBEDDING_DIMENSIONS,
         sourcepage_field="",
         content_field="",
-        query_language="pl-pl",
+        query_language="en-US",
         query_speller="lexicon",
     )
 

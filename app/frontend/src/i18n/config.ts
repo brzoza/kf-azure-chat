@@ -19,7 +19,7 @@ export const supportedLngs: { [key: string]: { name: string; locale: string } } 
     },
     en: {
         name: "English",
-        locale: "pl-pl"
+        locale: "en-US"
     },
     es: {
         name: "Español",

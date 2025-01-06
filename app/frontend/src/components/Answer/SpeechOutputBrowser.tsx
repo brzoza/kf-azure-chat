@@ -17,7 +17,7 @@ try {
     console.error("SpeechSynthesis is not supported");
 }
 
-const getUtterance = function (text: string, lngCode: string = "pl-pl") {
+const getUtterance = function (text: string, lngCode: string = "en-US") {
     if (synth) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lngCode;
@@ -27,7 +27,7 @@ const getUtterance = function (text: string, lngCode: string = "pl-pl") {
 
         let voice = synth.getVoices().filter((voice: SpeechSynthesisVoice) => voice.lang === lngCode)[0];
         if (!voice) {
-            voice = synth.getVoices().filter((voice: SpeechSynthesisVoice) => voice.lang === "pl-pl")[0];
+            voice = synth.getVoices().filter((voice: SpeechSynthesisVoice) => voice.lang === "en-US")[0];
         }
 
         utterance.voice = voice;
