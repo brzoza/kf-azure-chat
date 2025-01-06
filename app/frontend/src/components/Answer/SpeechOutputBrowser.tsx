@@ -17,7 +17,7 @@ try {
     console.error("SpeechSynthesis is not supported");
 }
 
-const getUtterance = function (text: string, lngCode: string = "en-US") {
+const getUtterance = function (text: string, lngCode: string = "pl-pl") {
     if (synth) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lngCode;
@@ -27,7 +27,7 @@ const getUtterance = function (text: string, lngCode: string = "en-US") {
 
         let voice = synth.getVoices().filter((voice: SpeechSynthesisVoice) => voice.lang === lngCode)[0];
         if (!voice) {
-            voice = synth.getVoices().filter((voice: SpeechSynthesisVoice) => voice.lang === "en-US")[0];
+            voice = synth.getVoices().filter((voice: SpeechSynthesisVoice) => voice.lang === "pl-pl")[0];
         }
 
         utterance.voice = voice;
@@ -40,7 +40,7 @@ export const SpeechOutputBrowser = ({ answer }: Props) => {
     const currentLng = i18n.language;
     let lngCode = supportedLngs[currentLng]?.locale;
     if (!lngCode) {
-        lngCode = "en-US";
+        lngCode = "pl-pl";
     }
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
 

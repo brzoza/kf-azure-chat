@@ -20,7 +20,7 @@ module main 'main.bicep' = {
     openAiHost: 'azure'
     openAiResourceGroupLocation: location
     searchIndexName: 'gptkbindex'
-    searchQueryLanguage: 'en-us'
+    searchQueryLanguage: 'pl-pl'
     searchQuerySpeller: 'lexicon'
     searchServiceSemanticRankerLevel: 'free'
     searchServiceSkuName: 'standard'
